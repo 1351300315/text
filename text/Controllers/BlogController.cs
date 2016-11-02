@@ -9,14 +9,22 @@ namespace text.Controllers
     public class BlogController : Controller
     {
         // GET: Blog
-        public ActionResult Index()
+        public ActionResult Index( string M)
         {
             var db = new BlogDatabase();
             
             db.Database.CreateIfNotExists();
             
-            var lst = db.BlogArticles.OrderByDescending(o => o.Id).ToList();
-            ViewBag.BlogArticles = lst;
+            var lst = db.BlogArticles.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(M))
+                            {
+                lst = lst.Where(o => o.Subject.Contains(M));
+                            }
+            
+            
+            ViewBag.BlogArticles = lst.OrderByDescending(o => o.Id).ToList();
+            ViewBag.M = M; ;
             return View();
         }
 
@@ -79,7 +87,8 @@ namespace text.Controllers
  
              return RedirectToAction("Index");
          }
-}
+       
+    }
  } 
 
    
