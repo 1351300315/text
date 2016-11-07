@@ -8,6 +8,8 @@ namespace text.Controllers
 {
     public class BlogController : Controller
     {
+        private BlogArticle article;
+
         // GET: Blog
         public ActionResult Index( string M)
         {
@@ -32,19 +34,24 @@ namespace text.Controllers
         {
            return View();
         }
- 
-        public ActionResult ArticleSave(string subject, string body)
+
+        //public ActionResult ArticleSave(string subject, string body)
+        public ActionResult ArticleSave(BlogArticle model)
+
         {
-             var article = new BlogArticle();
-             article.Subject = subject;
-             article.Body = body;
-             article.DateCreated = DateTime.Now;
- 
-             var db = new BlogDatabase();
-            db.BlogArticles.Add(article);
-             db.SaveChanges();
- 
-             return Redirect("Index");
+            if (ModelState.IsValid)
+            {
+                var article = new BlogArticle();
+                article.Subject = model.Subject;
+                article.Body = model.Body;
+                article.DateCreated = DateTime.Now;
+
+                var db = new BlogDatabase();
+                db.BlogArticles.Add(article);
+                db.SaveChanges();
+            }
+
+            return Redirect("Index");
          }
  
         public ActionResult Show(int id)
